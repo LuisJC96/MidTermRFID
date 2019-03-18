@@ -6,6 +6,7 @@
 package base.datos.swing;
 import ThingMagic.Readers.MercuryReader;
 import java.io.IOException;
+import static java.lang.Thread.sleep;
 import java.net.UnknownHostException;
 import java.sql.*;
 import java.util.Date;
@@ -28,7 +29,7 @@ public class GUI extends javax.swing.JFrame {
     String LastName1 = "";
     String LastName2 = "";
     String ImageLocation = "";
-    int Autorization = 0;
+    int Authorization = 0;
     Date date = new Date();
     long time = date.getTime();
     Timestamp ts = new Timestamp(time);
@@ -56,6 +57,11 @@ public class GUI extends javax.swing.JFrame {
         {
             show("Error: " + ex.toString());
         }
+        String comando = "SELECT data FROM tag_data WHERE protocol_id='GEN2' AND antenna_id=1 AND mem_bank=1 AND block_number=2"
+         + "AND block_count=6";
+        m4reader.doCommand(comando);
+        comando = "SET auto c = ON, repeat = 500;";
+        m4reader.doCommand(comando);
     }
         private void initDBComponents(){
         try
@@ -68,11 +74,11 @@ public class GUI extends javax.swing.JFrame {
             //String url = "jdbc:mysql://" + serverName + "/" + mydatabase;
             //String username = "sql10282032";
             //String password = "xIaVIMkM2q";
-            String serverName = "localhost";
-            String mydatabase = "rfidsecurity";
+            String serverName = "23.235.198.21";
+            String mydatabase = "martsp5_RFID_SECURITY";
             String url = "jdbc:mysql://" + serverName + "/" + mydatabase;
-            String username = "root";
-            String password = "";
+            String username = "martsp5_rfid_security";
+            String password = "uaDyZu9fZ9azmPC";
             conn = DriverManager.getConnection(url, username, password);
 	    // Usar el siguiente código en caso de querer eliminar la tabla PersonasTEC 
             // pre = conn.prepareStatement("DROP TABLE IF EXISTS PersonasTEC");
@@ -116,6 +122,9 @@ public class GUI extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jEPCguard = new javax.swing.JTextField();
         ReadEPC = new javax.swing.JButton();
+        jFirstName1 = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        jTextAreaShow = new javax.swing.JTextArea();
         CredentialEdition = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -140,7 +149,6 @@ public class GUI extends javax.swing.JFrame {
         jTextInside = new javax.swing.JTextField();
         jLabel19 = new javax.swing.JLabel();
         jTextAuthorization = new javax.swing.JTextField();
-        eliminateGuard = new javax.swing.JButton();
         giveCredentials = new javax.swing.JButton();
         AntennaAdministration = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -149,6 +157,9 @@ public class GUI extends javax.swing.JFrame {
         jTextPower = new javax.swing.JTextField();
         changePower = new javax.swing.JButton();
         getPower = new javax.swing.JButton();
+        jLabel21 = new javax.swing.JLabel();
+        TAGSetter = new javax.swing.JTextField();
+        reWritteEPC = new javax.swing.JButton();
         DisplayData = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel42 = new javax.swing.JLabel();
@@ -158,11 +169,9 @@ public class GUI extends javax.swing.JFrame {
         jLabel47 = new javax.swing.JLabel();
         jLabel48 = new javax.swing.JLabel();
         jTextFieldEPC4 = new javax.swing.JTextField();
-        jButtonLeeSQL3 = new javax.swing.JButton();
         jTextFieldNombre4 = new javax.swing.JTextField();
         jTextLastName7 = new javax.swing.JTextField();
         jTextLastName8 = new javax.swing.JTextField();
-        removeCredentials3 = new javax.swing.JButton();
         startStopLecture = new javax.swing.JButton();
         jLabel49 = new javax.swing.JLabel();
         jLabel50 = new javax.swing.JLabel();
@@ -172,9 +181,7 @@ public class GUI extends javax.swing.JFrame {
         jTextInside3 = new javax.swing.JTextField();
         jLabel52 = new javax.swing.JLabel();
         jTextAuthorization3 = new javax.swing.JTextField();
-        eliminateGuard3 = new javax.swing.JButton();
-        giveCredentials3 = new javax.swing.JButton();
-        jTextAreaShow = new javax.swing.JTextArea();
+        cleanTerminal = new javax.swing.JButton();
         jButtonExit = new javax.swing.JButton();
 
         jLabel4.setText("jLabel4");
@@ -223,10 +230,25 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        jFirstName1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFirstName1ActionPerformed(evt);
+            }
+        });
+
+        jLabel22.setText("jLabel22");
+
+        jTextAreaShow.setColumns(20);
+        jTextAreaShow.setRows(5);
+
         javax.swing.GroupLayout GuardRegisterLayout = new javax.swing.GroupLayout(GuardRegister);
         GuardRegister.setLayout(GuardRegisterLayout);
         GuardRegisterLayout.setHorizontalGroup(
             GuardRegisterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(GuardRegisterLayout.createSequentialGroup()
+                .addGap(311, 311, 311)
+                .addComponent(jLabel22)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(GuardRegisterLayout.createSequentialGroup()
                 .addGroup(GuardRegisterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -239,20 +261,25 @@ public class GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLastName2))
                     .addGroup(GuardRegisterLayout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jFirstName1))
+                    .addGroup(GuardRegisterLayout.createSequentialGroup()
                         .addGroup(GuardRegisterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
                             .addComponent(jLabel2)
-                            .addGroup(GuardRegisterLayout.createSequentialGroup()
-                                .addGap(319, 319, 319)
-                                .addComponent(JButtonEnviarSQL))
                             .addGroup(GuardRegisterLayout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jEPCguard, javax.swing.GroupLayout.PREFERRED_SIZE, 665, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(ReadEPC)))
-                        .addGap(0, 30, Short.MAX_VALUE)))
+                        .addGap(0, 138, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, GuardRegisterLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(JButtonEnviarSQL)
+                .addGap(366, 366, 366))
+            .addComponent(jTextAreaShow, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         GuardRegisterLayout.setVerticalGroup(
             GuardRegisterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -265,9 +292,11 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(jEPCguard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ReadEPC))
-                .addGap(26, 26, 26)
-                .addComponent(jLabel6)
-                .addGap(24, 24, 24)
+                .addGap(23, 23, 23)
+                .addGroup(GuardRegisterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jFirstName1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
                 .addGroup(GuardRegisterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
                     .addComponent(jLastName1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -275,8 +304,12 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(GuardRegisterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
                     .addComponent(jLastName2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1989, Short.MAX_VALUE)
+                .addGap(77, 77, 77)
+                .addComponent(jLabel22)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(JButtonEnviarSQL)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTextAreaShow, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -309,6 +342,12 @@ public class GUI extends javax.swing.JFrame {
         jButtonLeeSQL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonLeeSQLActionPerformed(evt);
+            }
+        });
+
+        jTextFieldNombre1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldNombre1ActionPerformed(evt);
             }
         });
 
@@ -357,8 +396,6 @@ public class GUI extends javax.swing.JFrame {
                 jTextAuthorizationActionPerformed(evt);
             }
         });
-
-        eliminateGuard.setText("Eliminar Guardia");
 
         giveCredentials.setText("Otorgar Credenciales");
         giveCredentials.addActionListener(new java.awt.event.ActionListener() {
@@ -419,11 +456,9 @@ public class GUI extends javax.swing.JFrame {
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGap(163, 163, 163)
                                 .addComponent(removeCredentials)
-                                .addGap(33, 33, 33)
-                                .addComponent(eliminateGuard, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(31, 31, 31)
+                                .addGap(198, 198, 198)
                                 .addComponent(giveCredentials, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 108, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(239, 239, 239)
@@ -476,7 +511,6 @@ public class GUI extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(removeCredentials)
-                    .addComponent(eliminateGuard)
                     .addComponent(giveCredentials)))
         );
 
@@ -502,7 +536,7 @@ public class GUI extends javax.swing.JFrame {
         jTabbedPane3.addTab("Edición Credenciales", CredentialEdition);
 
         jLabel20.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel20.setText("Administración de Antena");
+        jLabel20.setText("Administración de Antena y TAGS");
 
         jLabel23.setText("Seleccionar Intensidad:");
 
@@ -514,10 +548,19 @@ public class GUI extends javax.swing.JFrame {
         });
 
         getPower.setText("Leer Valor Actual");
-        getPower.setActionCommand("Leer Valor Actual");
         getPower.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 getPowerActionPerformed(evt);
+            }
+        });
+
+        jLabel21.setText("Escribir nuevo EPC:");
+
+        reWritteEPC.setText("Re-Escribir EPC");
+        reWritteEPC.setActionCommand("Reescribir EPC");
+        reWritteEPC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reWritteEPCActionPerformed(evt);
             }
         });
 
@@ -527,18 +570,29 @@ public class GUI extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jLabel20)
-                .addGap(0, 593, Short.MAX_VALUE))
+                .addGap(0, 658, Short.MAX_VALUE))
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jLabel23)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextPower)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel21, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel23, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextPower)
+                            .addComponent(TAGSetter)))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(145, 145, 145)
+                                .addComponent(changePower, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(32, 32, 32)
+                                .addComponent(getPower, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(154, 154, 154)
+                                .addComponent(reWritteEPC, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(145, 145, 145)
-                .addComponent(changePower, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(getPower, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -552,6 +606,12 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(changePower)
                     .addComponent(getPower))
+                .addGap(34, 34, 34)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(TAGSetter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(reWritteEPC)
                 .addContainerGap())
         );
 
@@ -572,7 +632,7 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane3.addTab("Administración de Antena", AntennaAdministration);
+        jTabbedPane3.addTab("Administración de Antena y TAGS", AntennaAdministration);
 
         jLabel42.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel42.setText("Despliegue de datos");
@@ -593,13 +653,6 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        jButtonLeeSQL3.setText("Deplegar Guardia");
-        jButtonLeeSQL3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonLeeSQL3ActionPerformed(evt);
-            }
-        });
-
         jTextLastName7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextLastName7ActionPerformed(evt);
@@ -609,13 +662,6 @@ public class GUI extends javax.swing.JFrame {
         jTextLastName8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextLastName8ActionPerformed(evt);
-            }
-        });
-
-        removeCredentials3.setText("Remover Credenciales");
-        removeCredentials3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removeCredentials3ActionPerformed(evt);
             }
         });
 
@@ -647,19 +693,15 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        eliminateGuard3.setText("Eliminar Guardia");
-
-        giveCredentials3.setText("Otorgar Credenciales");
-        giveCredentials3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                giveCredentials3ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel42)
+                    .addComponent(startStopLecture))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
@@ -684,37 +726,21 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(JTextLastExit3))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jLabel51)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(10, 10, 10)
                         .addComponent(jTextInside3))
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jLabel52)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextAuthorization3))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jLabel45)
-                                .addGap(171, 171, 171)
-                                .addComponent(jButtonLeeSQL3, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel45)
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addComponent(jLabel44)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldEPC4, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addGap(163, 163, 163)
-                                .addComponent(removeCredentials3)
-                                .addGap(33, 33, 33)
-                                .addComponent(eliminateGuard3, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(31, 31, 31)
-                                .addComponent(giveCredentials3, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 61, Short.MAX_VALUE)))
+                                .addComponent(jTextFieldEPC4, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 201, Short.MAX_VALUE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel52)
+                        .addGap(10, 10, 10)
+                        .addComponent(jTextAuthorization3)))
                 .addContainerGap())
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel42)
-                    .addComponent(startStopLecture))
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -726,30 +752,25 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel44)
                     .addComponent(jTextFieldEPC4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(jButtonLeeSQL3))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel45)))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel45)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel46)
                     .addComponent(jTextFieldNombre4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel47)
                     .addComponent(jTextLastName7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextLastName8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel48))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel48)
+                    .addComponent(jTextLastName8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel49)
                     .addComponent(jTextLastEntrance3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel50)
                     .addComponent(JTextLastExit3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -757,15 +778,11 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel51)
                     .addComponent(jTextInside3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel52)
                     .addComponent(jTextAuthorization3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(removeCredentials3)
-                    .addComponent(eliminateGuard3)
-                    .addComponent(giveCredentials3)))
+                .addGap(90, 90, 90))
         );
 
         javax.swing.GroupLayout DisplayDataLayout = new javax.swing.GroupLayout(DisplayData);
@@ -787,8 +804,12 @@ public class GUI extends javax.swing.JFrame {
 
         jTabbedPane3.addTab("Despliegue de Datos", DisplayData);
 
-        jTextAreaShow.setColumns(20);
-        jTextAreaShow.setRows(5);
+        cleanTerminal.setText("Limpiar Terminal");
+        cleanTerminal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cleanTerminalActionPerformed(evt);
+            }
+        });
 
         jButtonExit.setText("Salir de la Aplicación");
         jButtonExit.addActionListener(new java.awt.event.ActionListener() {
@@ -802,27 +823,26 @@ public class GUI extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jTextAreaShow, javax.swing.GroupLayout.PREFERRED_SIZE, 822, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(236, 236, 236)
-                        .addComponent(jButtonExit))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(350, 350, 350)
+                        .addComponent(jButtonExit)
+                        .addGap(68, 68, 68)
+                        .addComponent(cleanTerminal, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jTabbedPane3)
-                .addGap(18, 18, 18)
-                .addComponent(jTextAreaShow, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonExit)
-                .addGap(61, 61, 61))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonExit)
+                    .addComponent(cleanTerminal))
+                .addGap(67, 67, 67))
         );
 
         jTabbedPane3.getAccessibleContext().setAccessibleName("Panel1");
@@ -831,18 +851,38 @@ public class GUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    public void show(String response) { 
+        jTextAreaShow.append(response + "\n");
+        show1(response);
+    }
+    public void show1(String response1){
+        jEPCguard.setText(response1);
+        jTextFieldEPC2.setText(response1);
+        jTextFieldEPC4.setText(response1);
+    }
+
+    private void jFirstNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFirstNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jFirstNameActionPerformed
+
+    private void cleanTerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cleanTerminalActionPerformed
+        // TODO add your handling code here:
+        jTextAreaShow.setText("");
+    }//GEN-LAST:event_cleanTerminalActionPerformed
 
     private void jButtonExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExitActionPerformed
-                if (conn != null)
+        if (conn != null)
         {
             try
             {
@@ -851,20 +891,161 @@ public class GUI extends javax.swing.JFrame {
             catch (Exception e) { /* ignore close errors */}
         }
         System.exit(0);
-
     }//GEN-LAST:event_jButtonExitActionPerformed
-    public void show(String response) { 
-        jTextAreaShow.append(response + "\n");
-    }
 
-    private void jFirstNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFirstNameActionPerformed
+    private void jTextAuthorization3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextAuthorization3ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jFirstNameActionPerformed
+    }//GEN-LAST:event_jTextAuthorization3ActionPerformed
+
+    private void jTextInside3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextInside3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextInside3ActionPerformed
+
+    private void startStopLectureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startStopLectureActionPerformed
+        jTextAreaShow.setText("");
+        String alfa ="";
+        alfa = "set auto =OFF;";
+        m4reader.doCommand(alfa);
+        //jTextAreaShow.setText("");
+        alfa = "SELECT data FROM tag_data WHERE protocol_id='GEN2' AND antenna_id=1 AND mem_bank=1 AND block_number=2 "
+        + "AND block_count=6;";
+        m4reader.doCommand(alfa);
+        try{
+           sleep(100); 
+        }
+        catch(Exception e){
+            System.out.println("error sleep");
+        }
+
+        String gamma = jTextAreaShow.getText();
+        jTextFieldEPC4.setText(gamma.substring(3));
+        
+        //Checar
+        try
+        {
+            String sql = "select ID, FirstName, LastName1, LastName2, Authorization, LastEntrance, LastExit, inside from employee where EPC = "+ "'"+jTextFieldEPC4.getText()+"'"+";";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            String AuthorizationVal = "";
+            while (rs.next())
+            {
+                String FirstNameVal = rs.getString("FirstName");
+                String LastName1Val = rs.getString("LastName1");
+                String LastName2Val = rs.getString("LastName2");
+                AuthorizationVal = rs.getString("Authorization");
+                String LastEntranceVal = rs.getString("LastEntrance");
+                String LastExitVal = rs.getString("LastExit");
+                String insideVal = rs.getString("inside");
+
+                jTextFieldNombre4.setText(FirstNameVal);
+                jTextLastName7.setText(LastName1Val);
+                jTextLastName8.setText(LastName2Val);
+                jTextLastEntrance3.setText(LastEntranceVal);
+                JTextLastExit3.setText(LastExitVal);
+                if(Integer.parseInt(insideVal)==1)
+                {
+                    jTextInside3.setText("Dentro");
+                }
+                else{
+                    jTextInside3.setText("Fuera");
+                }
+                jTextAuthorization3.setText(AuthorizationVal);
+
+                System.out.println("Lectura de base datos exitosa.");
+
+            }
+            
+            try{
+                String query = "SELECT COUNT(EPC) FROM employee WHERE EPC = 'fdfds';";
+                PreparedStatement pss = conn.prepareStatement(query);
+                ResultSet rss=pss.executeQuery();
+                //System.out.println(rss.getInt("COUNT(EPC)")+"");
+                if(rss.next()){
+                    if(Integer.parseInt(rss.getString("COUNT(EPC)"))==1&&Integer.parseInt(AuthorizationVal)==1)
+                    {
+                        String command = "UPDATE io SET data = 0xFF WHERE type = 0 and mask = 0x08;";
+                        m4reader.doCommand(command);
+                        command = "UPDATE io SET data = 0x00 WHERE type = 0 and mask = 0x08;";
+                        m4reader.doCommand(command);
+                        System.out.println("Guardia pasa");
+                    }
+                    else
+                    {
+                        String command = "UPDATE io SET data = 0xFF WHERE type = 0 and mask = 0x04;";
+                        m4reader.doCommand(command);
+                        command = "UPDATE io SET data = 0x00 WHERE type = 0 and mask = 0x04;";
+                        m4reader.doCommand(command);
+                        System.out.println("Guardia no autorizado o no Registrado");
+                    }
+                }
+                
+                rss.close();
+                pss.close();
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                
+            }
+            rs.close ();
+            ps.close ();
+        }
+        catch (Exception e)
+        {
+            show("Error. No se pudo ejecutar la función SELECT.");
+        }
+        //Checar Fin
+    }//GEN-LAST:event_startStopLectureActionPerformed
+
+    private void jTextLastName8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextLastName8ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextLastName8ActionPerformed
+
+    private void jTextLastName7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextLastName7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextLastName7ActionPerformed
+
+    private void jTextFieldEPC4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldEPC4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldEPC4ActionPerformed
+
+    private void reWritteEPCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reWritteEPCActionPerformed
+        // TODO add your handling code here:
+        //UPDATE tag_data SET data=0x111122223333444455556666 WHERE protocol_id='GEN2' AND antenna_id=1 AND mem_bank=1 AND block_number=2 AND block_count=6;
+        String command = "SET auto= OFF;";
+        m4reader.doCommand(command);
+
+        command = "UPDATE tag_data SET data=0x"+TAGSetter.getText() +"WHERE protocol_id='GEN2' AND antenna_id=1 AND mem_bank=1 AND block_number=2 AND block_count=6;";
+        //UPDATE tag_data SET data=0x111122223333444455556666 WHERE protocol_id='GEN2' AND antenna_id=1 AND mem_bank=1 AND block_number=2 AND block_count=6;
+        m4reader.doCommand(command);
+        command = "SET auto c = ON, repeat = 500;";
+        m4reader.doCommand(command);
+    }//GEN-LAST:event_reWritteEPCActionPerformed
+
+    private void getPowerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getPowerActionPerformed
+        // TODO add your handling code here:
+        String command = "SET auto = OFF;";
+        m4reader.doCommand(command);
+        m4reader.doCommand("SELECT tx_power FROM Saved_settings;");
+        command = "SET auto c = ON, repeat = 500;";
+        m4reader.doCommand(command);
+    }//GEN-LAST:event_getPowerActionPerformed
+
+    private void changePowerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePowerActionPerformed
+        // TODO add your handling code here:
+        String command = "SET auto = OFF;";
+        m4reader.doCommand(command);
+        command = "UPDATE saved_settings SET tx_power= '" +jTextPower.getText()+"';";
+        m4reader.doCommand(command);
+        command = "SET auto c = ON, repeat = 500;";
+        m4reader.doCommand(command);
+
+    }//GEN-LAST:event_changePowerActionPerformed
 
     private void giveCredentialsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_giveCredentialsActionPerformed
         // TODO add your handling code here:
         try{
-            String sql = "UPDATE employee SET Autorization = ? where EPC = ?;";
+            String sql = "UPDATE employee SET Authorization = ? where EPC = ?;";
 
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, "1");
@@ -889,29 +1070,38 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextInsideActionPerformed
 
     private void LeerEPC2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LeerEPC2ActionPerformed
-        String alfa = "SELECT read_count, protocol_id, antenna_id, id FROM tag_id WHERE protocol_id='GEN2' set time_out=1000;";
+        jTextAreaShow.setText("");
+        String alfa ="";
+        alfa = "set auto =OFF;";
         m4reader.doCommand(alfa);
-        String beta = jTextAreaShow.getText();
-
-        int index = 0;
-        for(int i = 0; i<beta.length()-1; i++){
-            if(beta.charAt(i)=='x')
-            {
-                index = i;
-            }
+        //jTextAreaShow.setText("");
+        alfa = "SELECT data FROM tag_data WHERE protocol_id='GEN2' AND antenna_id=1 AND mem_bank=1 AND block_number=2 "
+        + "AND block_count=6;";
+        m4reader.doCommand(alfa);
+        try{
+           sleep(100); 
         }
-        System.out.println(index);
-        String gamma = beta.substring(index+1, beta.length()-6);
-        jTextFieldEPC2.setText(gamma);
+        catch(Exception e){
+            System.out.println("error sleep");
+        }
+
+        String gamma = jTextAreaShow.getText();
+        jTextFieldEPC2.setText(gamma.substring(3));
+        
+        System.out.println(gamma);
     }//GEN-LAST:event_LeerEPC2ActionPerformed
 
     private void removeCredentialsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeCredentialsActionPerformed
+        
+        
         try{
-            String sql = "UPDATE employee SET Autorization = ? where EPC = ?;";
+            String sql = "UPDATE employee SET Authorization = ? where EPC = ?;";
 
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, "0");
-            ps.setString(2, jTextFieldEPC2.getText());
+            String gamma = jTextFieldEPC2.getText();
+            System.out.println(gamma.substring(3,gamma.length()-2));
+            ps.setString(2, gamma.substring(3,gamma.length()-2));
             ps.executeUpdate();
             ps.close();
             show("Credenciales modificadas");
@@ -931,20 +1121,24 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextLastName1ActionPerformed
 
+    private void jTextFieldNombre1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNombre1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldNombre1ActionPerformed
+
     private void jButtonLeeSQLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLeeSQLActionPerformed
         try
         {
 
-            String sql = "select ID, FirstName, LastName1, LastName2, Autorization, LastEntrance, LastExit, inside from employee where EPC = "+ "'"+jTextFieldEPC2.getText()+"'"+";";
+            String sql = "select ID, FirstName, LastName1, LastName2, Authorization, LastEntrance, LastExit, inside from employee where EPC = "+ "'"+jTextFieldEPC2.getText()+"'"+";";
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            
+
             while (rs.next())
             {
                 String FirstNameVal = rs.getString("FirstName");
                 String LastName1Val = rs.getString("LastName1");
                 String LastName2Val = rs.getString("LastName2");
-                String AuthorizationVal = rs.getString("Autorization");
+                String AuthorizationVal = rs.getString("Authorization");
                 String LastEntranceVal = rs.getString("LastEntrance");
                 String LastExitVal = rs.getString("LastExit");
                 String insideVal = rs.getString("inside");
@@ -979,24 +1173,32 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldEPC2ActionPerformed
 
+    private void jFirstName1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFirstName1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jFirstName1ActionPerformed
+
     private void ReadEPCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReadEPCActionPerformed
         // TODO add your handling code here:
-
-        //jTextAreaShow.setText("");
-        String alfa = "SELECT read_count, protocol_id, antenna_id, id FROM tag_id WHERE protocol_id='GEN2' set time_out=1000;";
+        jTextAreaShow.setText("");
+        String alfa ="";
+        alfa = "set auto =OFF;";
         m4reader.doCommand(alfa);
-        String beta = jTextAreaShow.getText();
-
-        int index = 0;
-        for(int i = 0; i<beta.length()-1; i++){
-            if(beta.charAt(i)=='x')
-            {
-                index = i;
-            }
+        //jTextAreaShow.setText("");
+        alfa = "SELECT data FROM tag_data WHERE protocol_id='GEN2' AND antenna_id=1 AND mem_bank=1 AND block_number=2 "
+        + "AND block_count=6;";
+        m4reader.doCommand(alfa);
+        try{
+           sleep(100); 
         }
-        System.out.println(index);
-        String gamma = beta.substring(index+1, beta.length()-6);
-        jEPCguard.setText(gamma);
+        catch(Exception e){
+            System.out.println("error sleep");
+        }
+
+        String gamma = jTextAreaShow.getText();
+        jEPCguard.setText(gamma.substring(3));
+        
+        System.out.println(gamma);
+
     }//GEN-LAST:event_ReadEPCActionPerformed
 
     private void jLastName2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jLastName2ActionPerformed
@@ -1008,7 +1210,7 @@ public class GUI extends javax.swing.JFrame {
         try
         {
             epc = jEPCguard.getText();
-            FirstName = jFirstName.getText();
+            FirstName = jFirstName1.getText();
             LastName1 = jLastName1.getText();
             LastName2 = jLastName2.getText();
             ImageLocation = "C:\\Users\\luisj\\Desktop\\IMGS\\Laverga.jpg";
@@ -1017,7 +1219,7 @@ public class GUI extends javax.swing.JFrame {
             long time = date.getTime();
             Timestamp ts = new Timestamp(time);
             pre = conn.prepareStatement("INSERT INTO employee (EPC, FirstName"
-                + ", LastName1, LastName2, ImageLocation, Autorization,"
+                + ", LastName1, LastName2, ImageLocation, Authorization,"
                 + "LastEntrance, LastExit, inside) VALUES(?,?,?,?,?,?,?,?,?);");
 
             pre.setString(1, epc);
@@ -1025,7 +1227,8 @@ public class GUI extends javax.swing.JFrame {
             pre.setString(3, LastName1);
             pre.setString(4, LastName2);
             pre.setString(5,ImageLocation);
-            pre.setString(6, ""+Autorization);
+            Authorization = 1;
+            pre.setString(6, ""+Authorization);
             pre.setString(7,""+ts);
             pre.setString(8,""+ts);
             pre.setString(9, ""+inside);
@@ -1039,121 +1242,6 @@ public class GUI extends javax.swing.JFrame {
             show("Error al enviar la información a la base de datos.");
         }
     }//GEN-LAST:event_JButtonEnviarSQLActionPerformed
-
-    private void jTextInside3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextInside3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextInside3ActionPerformed
-
-    private void jTextAuthorization3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextAuthorization3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextAuthorization3ActionPerformed
-
-    private void giveCredentials3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_giveCredentials3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_giveCredentials3ActionPerformed
-
-    private void removeCredentials3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeCredentials3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_removeCredentials3ActionPerformed
-
-    private void jTextLastName8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextLastName8ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextLastName8ActionPerformed
-
-    private void jTextLastName7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextLastName7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextLastName7ActionPerformed
-
-    private void jButtonLeeSQL3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLeeSQL3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonLeeSQL3ActionPerformed
-
-    private void startStopLectureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startStopLectureActionPerformed
-        //String alfa = "SELECT read_count, protocol_id, antenna_id, id FROM tag_id WHERE protocol_id='GEN2' set time_out=1000;";
-        //m4reader.doCommand(alfa);
-        String controlEPC = "";
-        
-        //String gamma = beta.substring(index+1, beta.length()-6);
-        //jTextFieldEPC4.setText(gamma);
-        
-        try
-        {
-
-            String sql = "EPC, select ID, FirstName, LastName1, LastName2, Autorization, LastEntrance, LastExit, inside from employee where EPC = "+ "'"+jTextFieldEPC2.getText()+"'"+";";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            
-            while (rs.next())
-            {
-                controlEPC = rs.getString("EPC");
-                String FirstNameVal = rs.getString("FirstName");
-                String LastName1Val = rs.getString("LastName1");
-                String LastName2Val = rs.getString("LastName2");
-                String AuthorizationVal = rs.getString("Autorization");
-                String LastEntranceVal = rs.getString("LastEntrance");
-                String LastExitVal = rs.getString("LastExit");
-                String insideVal = rs.getString("inside");
-
-                jTextFieldNombre1.setText(FirstNameVal);
-                jTextLastName1.setText(LastName1Val);
-                jTextLastName2.setText(LastName2Val);
-                jTextLastEntrance.setText(LastEntranceVal);
-                JTextLastExit.setText(LastExitVal);
-                if(Integer.parseInt(insideVal)==1)
-                {
-                    jTextInside.setText("Dentro");
-                }
-                else{
-                    jTextInside.setText("Fuera");
-                }
-                jTextAuthorization.setText(AuthorizationVal);
-
-                show("Lectura de base datos exitosa.");
-
-            }
-            rs.close ();
-            ps.close ();
-        }
-        catch (Exception e)
-        {
-            show("Error. No se pudo ejecutar la función SELECT.");
-        }
-        try
-        {
-            String sql = "SELECT EPC, count(*) as NUM FROM  employee where EPC = '"+ jTextFieldEPC4.getText()+"';";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            controlEPC = rs.getString("count");
-        }
-        catch(Exception e)
-        {
-            
-        }
-        if(Integer.parseInt(controlEPC)==1){
-            String command = "UPDATE io SET data = 0x00 WHERE type = 0 and mask = 0x08;";
-            m4reader.doCommand(command);
-        }
-        else
-        {
-            String command = "UPDATE io SET data = 0x00 WHERE type = 0 and mask = 0x04;";
-            m4reader.doCommand(command);
-        }
-    }//GEN-LAST:event_startStopLectureActionPerformed
-
-    private void jTextFieldEPC4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldEPC4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldEPC4ActionPerformed
-
-    private void changePowerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePowerActionPerformed
-        // TODO add your handling code here:
-        String comando = "UPDATE saved_settings SET tx_power= '" +jTextPower.getText()+"';";
-        m4reader.doCommand(comando);
-    }//GEN-LAST:event_changePowerActionPerformed
-
-    private void getPowerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getPowerActionPerformed
-        // TODO add your handling code here:
-        m4reader.doCommand("SELECT tx_power FROM Saved_settings;");
-    }//GEN-LAST:event_getPowerActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1198,25 +1286,19 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPanel GuardRegister;
     private javax.swing.JButton JButtonEnviarSQL;
     private javax.swing.JTextField JTextLastExit;
-    private javax.swing.JTextField JTextLastExit2;
     private javax.swing.JTextField JTextLastExit3;
     private javax.swing.JButton LeerEPC2;
-    private javax.swing.JButton LeerEPC4;
     private javax.swing.JButton ReadEPC;
+    private javax.swing.JTextField TAGSetter;
     private javax.swing.JButton changePower;
-    private javax.swing.JButton eliminateGuard;
-    private javax.swing.JButton eliminateGuard2;
-    private javax.swing.JButton eliminateGuard3;
+    private javax.swing.JButton cleanTerminal;
     private javax.swing.JButton getPower;
     private javax.swing.JButton giveCredentials;
-    private javax.swing.JButton giveCredentials2;
-    private javax.swing.JButton giveCredentials3;
     private javax.swing.JButton jButtonExit;
     private javax.swing.JButton jButtonLeeSQL;
-    private javax.swing.JButton jButtonLeeSQL2;
-    private javax.swing.JButton jButtonLeeSQL3;
     private javax.swing.JTextField jEPCguard;
     private javax.swing.JTextField jFirstName;
+    private javax.swing.JTextField jFirstName1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1230,20 +1312,11 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel31;
-    private javax.swing.JLabel jLabel32;
-    private javax.swing.JLabel jLabel33;
-    private javax.swing.JLabel jLabel34;
-    private javax.swing.JLabel jLabel35;
-    private javax.swing.JLabel jLabel36;
-    private javax.swing.JLabel jLabel37;
-    private javax.swing.JLabel jLabel38;
-    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel40;
-    private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel45;
@@ -1265,35 +1338,25 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JTextArea jTextAreaShow;
     private javax.swing.JTextField jTextAuthorization;
-    private javax.swing.JTextField jTextAuthorization2;
     private javax.swing.JTextField jTextAuthorization3;
     private javax.swing.JTextField jTextFieldEPC2;
-    private javax.swing.JTextField jTextFieldEPC3;
     private javax.swing.JTextField jTextFieldEPC4;
     private javax.swing.JTextField jTextFieldNombre1;
-    private javax.swing.JTextField jTextFieldNombre3;
     private javax.swing.JTextField jTextFieldNombre4;
     private javax.swing.JTextField jTextInside;
-    private javax.swing.JTextField jTextInside2;
     private javax.swing.JTextField jTextInside3;
     private javax.swing.JTextField jTextLastEntrance;
-    private javax.swing.JTextField jTextLastEntrance2;
     private javax.swing.JTextField jTextLastEntrance3;
     private javax.swing.JTextField jTextLastName1;
     private javax.swing.JTextField jTextLastName2;
-    private javax.swing.JTextField jTextLastName5;
-    private javax.swing.JTextField jTextLastName6;
     private javax.swing.JTextField jTextLastName7;
     private javax.swing.JTextField jTextLastName8;
     private javax.swing.JTextField jTextPower;
+    private javax.swing.JButton reWritteEPC;
     private javax.swing.JButton removeCredentials;
-    private javax.swing.JButton removeCredentials2;
-    private javax.swing.JButton removeCredentials3;
     private javax.swing.JButton startStopLecture;
     // End of variables declaration//GEN-END:variables
 }
